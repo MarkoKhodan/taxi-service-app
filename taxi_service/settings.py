@@ -26,7 +26,7 @@ SECRET_KEY = SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3c
 # SECURITY WARNING: don"t run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["taxi-sevice-app.herokuapp.com"]
 
 INTERNAL_IPS = [
     "127.0.0.1",
