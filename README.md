@@ -5,7 +5,7 @@
 Taxi-service is service to help manage cars, drivers and manufacturers
 
 ## Check it out!
-[Taxi-service project deployed to Heroku](URL)
+[Taxi-service project deployed to Heroku](https://taxi-service-marko.herokuapp.com/)
 ## Installation 
 
 ```shell
