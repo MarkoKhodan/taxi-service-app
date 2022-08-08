@@ -1,9 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.template.backends import django
 from django.test import TestCase
 from django.urls import reverse, reverse_lazy
 
-from taxi.forms import CarSearchForm
 from taxi.models import Car, Manufacturer
 
 
@@ -130,10 +128,13 @@ class AssignCarToDriverViewTest(TestCase):
 
         self.assertContains(response, "Assign me to this car")
 
-        # response = self.client.get(reverse('taxi:car-detail', kwargs={'pk': 1}))
-        # self.assertContains(response,
-        #                     '<a href="%s">Assign me to this car</a>' % reverse('taxi:car-assign', kwargs={'pk': 1}),
-        #                     html=True)
+    def test_car_is_assigned_to_driver(self):
+        response = self.client.get("cars/1/assign")
+
+        self.assertContains(response, "Delete me from this car")
+
+
+
 
     def test_car_is_assigned_to_driver(self):
         user = get_user_model().objects.get(id=1)
@@ -242,6 +243,9 @@ class CarListViewsTest(TestCase):
 
 
 class CarCreateUpdateDeleteViewsTest(TestCase):
+
+    MANUFACTURER_ID = 1
+    DRIVER_ID = 1
     @classmethod
     def setUpTestData(cls):
         get_user_model().objects.create_user(
@@ -259,7 +263,7 @@ class CarCreateUpdateDeleteViewsTest(TestCase):
     def setUp(self) -> None:
         self.client.force_login(get_user_model().objects.get(id=1))
 
-    def test_success_url(self):
+    def test_create_success_url(self):
         MANUFACTURER_ID = 1
         DRIVER_ID = 1
 
@@ -268,15 +272,35 @@ class CarCreateUpdateDeleteViewsTest(TestCase):
                 "drivers": DRIVER_ID
                 }
 
-        response_create = self.client.post(reverse('taxi:car-create'), post)
-        response_update = self.client.post(reverse('taxi:car-update', kwargs={"pk": 1}), post)
-        response_delete = self.client.post(reverse('taxi:car-delete', kwargs={"pk": 1}))
+        response = self.client.post(reverse('taxi:car-create'), post)
 
-        self.assertEqual(response_create.status_code, 302)
-        self.assertRedirects(response_create, reverse_lazy("taxi:car-list"))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse_lazy("taxi:car-list"))
 
-        # self.assertEqual(response_update.status_code, 302)
-        # self.assertRedirects(response_update, reverse_lazy('taxi:car-detail', kwargs={'pk': 1}))
+    def test_update_success_url(self):
+        MANUFACTURER_ID = 1
+        DRIVER_ID = 1
 
-        self.assertEqual(response_delete.status_code, 302)
-        self.assertRedirects(response_delete, reverse_lazy("taxi:car-list"))
+        post = {"model": "test",
+                "manufacturer": MANUFACTURER_ID,
+                "drivers": DRIVER_ID
+                }
+
+        response = self.client.post(reverse('taxi:car-update', kwargs={"pk": 1}), post)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse_lazy("taxi:car-detail", kwargs={"pk": 1}))
+
+    def test_delete_success_url(self):
+        MANUFACTURER_ID = 1
+        DRIVER_ID = 1
+
+        post = {"model": "test",
+                "manufacturer": MANUFACTURER_ID,
+                "drivers": DRIVER_ID
+                }
+
+        response = self.client.post(reverse('taxi:car-delete', kwargs={"pk": 1}))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse_lazy("taxi:car-list"))
