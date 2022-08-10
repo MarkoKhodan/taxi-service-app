@@ -8,7 +8,11 @@ from django import forms
 class DriverCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Driver
-        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "license_number",)
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "license_number",
+        )
 
 
 class DriverUpdatingForm(forms.ModelForm):
@@ -35,5 +39,5 @@ class CarSearchForm(forms.Form):
         max_length=255,
         required=False,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "Search by title"})
+        widget=forms.TextInput(attrs={"placeholder": "Search by title"}),
     )

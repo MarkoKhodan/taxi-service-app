@@ -12,7 +12,9 @@ class ManufacturerModelsTest(TestCase):
     def test_str(self):
         manufacturer = Manufacturer.objects.get(id=1)
 
-        self.assertEqual(str(manufacturer), f"{manufacturer.name} {manufacturer.country}")
+        self.assertEqual(
+            str(manufacturer), f"{manufacturer.name} {manufacturer.country}"
+        )
 
 
 class CarModelsTest(TestCase):
@@ -20,10 +22,7 @@ class CarModelsTest(TestCase):
     def setUpTestData(cls):
         Manufacturer.objects.create(name="Test", country="Test country")
         manufacturer = Manufacturer.objects.get(id=1)
-        Car.objects.create(
-            model="Test",
-            manufacturer=manufacturer
-        )
+        Car.objects.create(model="Test", manufacturer=manufacturer)
 
     def test_str(self):
         car = Car.objects.get(id=1)
@@ -34,10 +33,7 @@ class CarModelsTest(TestCase):
 class DriverModelsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        get_user_model().objects.create_user(
-            username="Test",
-            password="Test12345"
-        )
+        get_user_model().objects.create_user(username="Test", password="Test12345")
 
     def setUp(self) -> None:
 
@@ -45,7 +41,10 @@ class DriverModelsTest(TestCase):
 
     def test_str(self):
 
-        self.assertEqual(str(self.user),f"{self.user.username} ({self.user.first_name} {self.user.last_name})")
+        self.assertEqual(
+            str(self.user),
+            f"{self.user.username} ({self.user.first_name} {self.user.last_name})",
+        )
 
     def test_verbose_name(self):
 
@@ -57,4 +56,4 @@ class DriverModelsTest(TestCase):
 
     def test_get_absolute_url(self):
 
-        self.assertEquals(self.user.get_absolute_url(), '/drivers/1/')
+        self.assertEquals(self.user.get_absolute_url(), "/drivers/1/")

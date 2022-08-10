@@ -77,9 +77,7 @@ class CarListView(LoginRequiredMixin, generic.ListView):
 
         title = self.request.GET.get("title", "")
 
-        context["search_form"] = CarSearchForm(initial={
-            "title": title
-        })
+        context["search_form"] = CarSearchForm(initial={"title": title})
 
         return context
 
@@ -87,7 +85,9 @@ class CarListView(LoginRequiredMixin, generic.ListView):
         form = CarSearchForm(self.request.GET)
 
         if form.is_valid():
-            return self.queryset.filter(manufacturer__name__icontains=form.cleaned_data["title"])
+            return self.queryset.filter(
+                manufacturer__name__icontains=form.cleaned_data["title"]
+            )
 
         return self.queryset
 
@@ -107,7 +107,7 @@ class CarUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = "__all__"
 
     def get_success_url(self):
-        return reverse('taxi:car-detail', kwargs={'pk': self.object.pk})
+        return reverse("taxi:car-detail", kwargs={"pk": self.object.pk})
 
 
 class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -136,7 +136,7 @@ class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = DriverUpdatingForm
 
     def get_success_url(self):
-        return reverse('taxi:driver-detail', kwargs={'pk': self.object.pk})
+        return reverse("taxi:driver-detail", kwargs={"pk": self.object.pk})
 
 
 class DriverDeleteView(LoginRequiredMixin, generic.DeleteView):

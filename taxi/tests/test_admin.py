@@ -10,8 +10,7 @@ class DriverAdminTest(TestCase):
         self.client = Client()
 
         self.admin = get_user_model().objects.create_superuser(
-            username="Test",
-            password="Test12345"
+            username="Test", password="Test12345"
         )
 
         self.client.force_login(self.admin)

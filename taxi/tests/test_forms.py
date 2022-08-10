@@ -4,7 +4,6 @@ from taxi.forms import DriverCreationForm, DriverUpdatingForm
 
 
 class DriverCreationFormTest(TestCase):
-
     def test_driver_creation_form_with_first_name_last_name_and_license_number(self):
         form_data = {
             "username": "new_driver",
@@ -12,7 +11,7 @@ class DriverCreationFormTest(TestCase):
             "password2": "Driver123password",
             "first_name": "first_test",
             "last_name": "last_test",
-            "license_number": "KVP12234"
+            "license_number": "KVP12234",
         }
         form = DriverCreationForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -20,20 +19,11 @@ class DriverCreationFormTest(TestCase):
 
 
 class DriverUpdatingFormTest(TestCase):
-
     def test_license_number_validation(self):
-        form_data_checked = {
-            "license_number": "KVP12345"
-        }
-        form_data_less_then_8_digits = {
-            "license_number": "as21235"
-        }
-        form_data_first_3_not_capital = {
-            "license_number": "abs21235"
-        }
-        form_data_last_5_not_numbers = {
-            "license_number": "ABS123a"
-        }
+        form_data_checked = {"license_number": "KVP12345"}
+        form_data_less_then_8_digits = {"license_number": "as21235"}
+        form_data_first_3_not_capital = {"license_number": "abs21235"}
+        form_data_last_5_not_numbers = {"license_number": "ABS123a"}
 
         form = DriverUpdatingForm(data=form_data_checked)
         self.assertTrue(form.is_valid())
@@ -45,7 +35,7 @@ class DriverUpdatingFormTest(TestCase):
 
         form = DriverUpdatingForm(data=form_data_first_3_not_capital)
         self.assertFalse(form.is_valid())
-        self.assertRaisesMessage(form,"First 3 characters must be capital letters.")
+        self.assertRaisesMessage(form, "First 3 characters must be capital letters.")
 
         form = DriverUpdatingForm(data=form_data_last_5_not_numbers)
         self.assertFalse(form.is_valid())
