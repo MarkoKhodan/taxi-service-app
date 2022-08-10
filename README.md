@@ -6,16 +6,36 @@ Taxi-service is service to help manage cars, drivers and manufacturers
 
 ## Check it out!
 [Taxi-service project deployed to Heroku](https://taxi-service-marko.herokuapp.com/)
+
+### You can check functionality with testing user:
+
+* login: user
+* password: user12345
+
 ## Installation 
 
 ```shell
-git clone https://github.com/MarkoKhodan/taxi-service.git
-cd taxi-service 
+git clone git@github.com:MarkoKhodan/taxi_service_app.git
+cd taxi_service_appice/
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+python manage.py runmigtarions
 python manage.py runserver
 ```
+
+Windows:
+```shell
+git clone git@github.com:MarkoKhodan/taxi_service_app.git
+cd taxi_service_appice/
+python3 -m venv venv
+source venv/Scripts/activate
+pip install -r requirements.txt
+python manage.py runmigtarions
+python manage.py runserver 
+```
+
+
 
 ## Features
 
