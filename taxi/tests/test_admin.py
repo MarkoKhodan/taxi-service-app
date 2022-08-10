@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
+from django.urls import reverse
+
+INDEX_URL = reverse("taxi:index")
 
 
 class DriverAdminTest(TestCase):
@@ -20,19 +23,19 @@ class DriverAdminTest(TestCase):
         )
 
     def test_license_number_listed(self):
-        url = "http://127.0.0.1:8000/admin/taxi/driver/"
+        url = f"{INDEX_URL}admin/taxi/driver/"
         response = self.client.get(url)
 
         self.assertContains(response, self.user.license_number)
 
     def test_license_number_in_update_page(self):
-        url = "http://127.0.0.1:8000/admin/taxi/driver/2/change/"
+        url = f"{INDEX_URL}admin/taxi/driver/2/change/"
         response = self.client.get(url)
 
         self.assertContains(response, self.user.license_number)
 
     def test_license_number_in_create_page(self):
-        url = "http://127.0.0.1:8000/admin/taxi/driver/add/"
+        url = f"{INDEX_URL}admin/taxi/driver/add/"
         response = self.client.get(url)
 
         self.assertContains(response, "License number:")

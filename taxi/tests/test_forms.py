@@ -18,6 +18,7 @@ class DriverCreationFormTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data, form_data)
 
+
 class DriverUpdatingFormTest(TestCase):
 
     def test_license_number_validation(self):

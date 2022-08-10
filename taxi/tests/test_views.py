@@ -4,6 +4,17 @@ from django.urls import reverse, reverse_lazy
 
 from taxi.models import Car, Manufacturer
 
+INDEX_URL = reverse("taxi:index")
+CAR_DETAIL_URL = reverse("taxi:car-detail", kwargs={"pk": 1})
+MANUFACTURER_LIST_URL = reverse("taxi:manufacturer-list")
+CARS_LIST_URL = reverse("taxi:car-list")
+CAR_CREATE_URL = reverse('taxi:car-create')
+CAR_UPDATE_URL = reverse('taxi:car-update', kwargs={"pk": 1})
+CAR_DELETE_URL = reverse('taxi:car-delete', kwargs={"pk": 1})
+MANUFACTURER_ID = 1
+DRIVER_ID = 1
+
+
 
 class LoginRequiredTest(TestCase):
     """Test login required decorator and mixin with redirection to the right page after login"""
@@ -26,38 +37,39 @@ class LoginRequiredTest(TestCase):
         )
 
     def test_index(self):
-        url = "http://127.0.0.1:8000"
-        response = self.client.get(url)
+
+        response = self.client.get(INDEX_URL)
 
         self.assertRedirects(response, "/accounts/login/?next=/")
 
     def test_drivers_list(self):
-        url = "http://127.0.0.1:8000/drivers/"
+
+        url = reverse("taxi:driver-list")
         response = self.client.get(url)
 
         self.assertRedirects(response, "/accounts/login/?next=/drivers/")
 
     def test_cars_list(self):
-        url = "http://127.0.0.1:8000/cars/"
-        response = self.client.get(url)
+
+        response = self.client.get(CARS_LIST_URL)
 
         self.assertRedirects(response, "/accounts/login/?next=/cars/")
 
     def test_manufacturers_list(self):
-        url = "http://127.0.0.1:8000/manufacturers/"
-        response = self.client.get(url)
+
+        response = self.client.get(MANUFACTURER_LIST_URL)
 
         self.assertRedirects(response, "/accounts/login/?next=/manufacturers/")
 
     def test_driver_detail(self):
-        url = "http://127.0.0.1:8000/drivers/1/"
+        url = reverse("taxi:driver-detail", kwargs={"pk": 1})
         response = self.client.get(url)
 
         self.assertRedirects(response, "/accounts/login/?next=/drivers/1/")
 
     def test_car_detail(self):
-        url = "http://127.0.0.1:8000/cars/1/"
-        response = self.client.get(url)
+
+        response = self.client.get(CAR_DETAIL_URL)
 
         self.assertRedirects(response, "/accounts/login/?next=/cars/1/")
 
@@ -89,7 +101,7 @@ class IndexViewTest(TestCase):
         )
 
         self.client.force_login(self.user)
-        self.response = self.client.get("http://127.0.0.1:8000")
+        self.response = self.client.get(INDEX_URL)
 
     def test_context_variables_values(self):
         self.assertEqual(self.response.context["num_cars"], 1)
@@ -124,24 +136,16 @@ class AssignCarToDriverViewTest(TestCase):
         self.client.force_login(get_user_model().objects.get(id=1))
 
     def test_car_is_not_assigned_to_driver(self):
-        response = self.client.get("http://127.0.0.1:8000/cars/1/")
+        response = self.client.get(CAR_DETAIL_URL)
 
         self.assertContains(response, "Assign me to this car")
-
-    def test_car_is_assigned_to_driver(self):
-        response = self.client.get("cars/1/assign")
-
-        self.assertContains(response, "Delete me from this car")
-
-
-
 
     def test_car_is_assigned_to_driver(self):
         user = get_user_model().objects.get(id=1)
         car = Car.objects.get(id=1)
         user.cars.add(car)
 
-        response = self.client.get("http://127.0.0.1:8000/cars/1/")
+        response = self.client.get(CAR_DETAIL_URL)
 
         self.assertContains(response, "Delete me from this car")
 
@@ -164,7 +168,7 @@ class ManufacturerListViewTest(TestCase):
 
     def setUp(self) -> None:
         self.client.force_login(get_user_model().objects.get(id=1))
-        self.response = self.client.get(reverse('taxi:manufacturer-list'))
+        self.response = self.client.get(MANUFACTURER_LIST_URL)
         self.manufactures = Manufacturer.objects.all()
 
     def test_context_variable_value(self):
@@ -180,6 +184,7 @@ class ManufacturerListViewTest(TestCase):
 
 
 class ManufacturerCreateUpdateDeleteViewsTest(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         get_user_model().objects.create_user(
@@ -195,7 +200,7 @@ class ManufacturerCreateUpdateDeleteViewsTest(TestCase):
                 "country": "test country"
                 }
 
-        success_url = reverse_lazy("taxi:manufacturer-list")
+        success_url = MANUFACTURER_LIST_URL
         response_create = self.client.post(reverse('taxi:manufacturer-create'), post)
         response_update = self.client.post(reverse('taxi:manufacturer-update', kwargs={"pk": 1}), post)
         response_delete = self.client.post(reverse('taxi:manufacturer-delete', kwargs={"pk": 1}))
@@ -211,6 +216,7 @@ class ManufacturerCreateUpdateDeleteViewsTest(TestCase):
 
 
 class CarListViewsTest(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         get_user_model().objects.create_user(
@@ -235,8 +241,8 @@ class CarListViewsTest(TestCase):
         self.client.force_login(get_user_model().objects.get(id=1))
 
     def test_search_form(self):
-        response_first_page = self.client.get("http://127.0.0.1:8000/cars/?title=test1&page=1")
-        response_second_page = self.client.get("http://127.0.0.1:8000/cars/?title=test1&page=2")
+        response_first_page = self.client.get(f"{CARS_LIST_URL}?title=test1&page=1")
+        response_second_page = self.client.get(f"{CARS_LIST_URL}??title=test1&page=2")
         self.assertContains(response_first_page, "test1")
         self.assertContains(response_first_page, "test2")
         self.assertContains(response_second_page, "test3")
@@ -244,8 +250,6 @@ class CarListViewsTest(TestCase):
 
 class CarCreateUpdateDeleteViewsTest(TestCase):
 
-    MANUFACTURER_ID = 1
-    DRIVER_ID = 1
     @classmethod
     def setUpTestData(cls):
         get_user_model().objects.create_user(
@@ -264,43 +268,38 @@ class CarCreateUpdateDeleteViewsTest(TestCase):
         self.client.force_login(get_user_model().objects.get(id=1))
 
     def test_create_success_url(self):
-        MANUFACTURER_ID = 1
-        DRIVER_ID = 1
 
         post = {"model": "test",
                 "manufacturer": MANUFACTURER_ID,
                 "drivers": DRIVER_ID
                 }
 
-        response = self.client.post(reverse('taxi:car-create'), post)
+        response = self.client.post(CAR_CREATE_URL, post)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse_lazy("taxi:car-list"))
+        self.assertRedirects(response, CARS_LIST_URL)
 
     def test_update_success_url(self):
-        MANUFACTURER_ID = 1
-        DRIVER_ID = 1
 
         post = {"model": "test",
                 "manufacturer": MANUFACTURER_ID,
                 "drivers": DRIVER_ID
                 }
 
-        response = self.client.post(reverse('taxi:car-update', kwargs={"pk": 1}), post)
+        response = self.client.post(CAR_UPDATE_URL, post)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse_lazy("taxi:car-detail", kwargs={"pk": 1}))
+        self.assertRedirects(response, CAR_DETAIL_URL)
 
     def test_delete_success_url(self):
-        MANUFACTURER_ID = 1
-        DRIVER_ID = 1
+
 
         post = {"model": "test",
                 "manufacturer": MANUFACTURER_ID,
                 "drivers": DRIVER_ID
                 }
 
-        response = self.client.post(reverse('taxi:car-delete', kwargs={"pk": 1}))
+        response = self.client.post(CAR_DELETE_URL)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse_lazy("taxi:car-list"))
+        self.assertRedirects(response, CARS_LIST_URL)
