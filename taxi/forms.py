@@ -14,6 +14,9 @@ class DriverCreationForm(UserCreationForm):
             "license_number",
         )
 
+    def clean_license_number(self):
+        return check_license(self.cleaned_data["license_number"])
+
 
 class DriverUpdatingForm(forms.ModelForm):
     class Meta:
